@@ -7,14 +7,14 @@
         padding-top: 2rem;
         
     }
+    .navegacion{
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .copyright{
+        color: $blanco;
+        text-align: center;
+    }
 }
 
-.navegacion{
-    visibility: visible;
-    opacity: 1;
-}
-
-.copyright{
-    color: $blanco;
-    text-align: center;
-}
