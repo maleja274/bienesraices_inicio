@@ -29,10 +29,12 @@
     text-decoration: none;
     padding: 1rem 3rem;
     text-align: center;
-    margin-top: 5rem;
+    margin: 5rem 0;
     display: $display;
+    border: none;
 
     &:hover{
         background-color: darken($color: #000000, $amount: 0);
+        cursor: pointer;
     }   
 }
