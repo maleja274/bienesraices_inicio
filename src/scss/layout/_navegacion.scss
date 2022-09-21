@@ -42,13 +42,14 @@
 
     visibility: hidden;
     opacity: 0;
-    transition: visibility .3s ease-in-out, opacity 0.5s linear;
+    transition: visibility .3s ease-in-out, opacity 0.5s linear, height 0.5s linear;
     
 
     @include tablet{
         display: flex;
         align-items: center;
         opacity: 1;
+        height: 0;
         visibility: visible;
     }
     a{
@@ -80,4 +81,5 @@
 .mostrar{
     visibility: visible;
     opacity: 1;
+    height: auto;
 }
