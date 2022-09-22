@@ -6,9 +6,15 @@
     // Arreglo con mensaje de errores
     $errores = [];
 
+    $titulo = '';
+    $precio = '';
+    $descripcion = '';
+    $habitaciones = '';
+    $wc = '';
+    $estacionamiento = '';
+    $vendedorId = '';
 
-
-
+    // Ejecutar el codigo despues de que el usuario envia el formulario
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         // echo "<pre>";
         // var_dump($_POST);
@@ -33,15 +39,31 @@
         if(strlen($descripcion) < 50) {
             $errores[] = "La descripcion es obligatoriay debe tener al menos 50 caracteres";
         }
-        
-        echo "<pre>";
-        var_dump($errores);
-        echo "</pre>";
 
-        exit;
+        if(!$habitaciones) {
+            $errores[] = "El numero de habitaciones es obligatoria";
+        }
 
-        //Insertar en la base de datos
+        if(!$wc) {
+            $errores[] = "El numero de wc es obligatorio";
+        }
 
+        if(!$estacionamiento) {
+            $errores[] = "El numero de estacionamientos es obligatorio";
+        }
+
+        if(!$vendedorId) {
+            $errores[] = "Elige un vendedor";
+        }
+
+        // echo "<pre>";
+        // var_dump($errores);
+        // echo "</pre>";
+
+     // Revisa que el array de errores este vacio
+
+     if(empty($errores)) {
+    //Insertar en la base de datos
     $query = "INSERT INTO propiedades (titulo, precio, descripcion, habitaciones, wc, estacionamiento, vendedorId) VALUES ('$titulo', 
     '$precio', '$descripcion', '$habitaciones', '$wc', '$estacionamiento', '$vendedorId')";
     // echo($query);
@@ -50,6 +72,7 @@
 
     if($resultado) {
         echo "insertado correctamente";
+    }    
     }
     } 
 
@@ -60,39 +83,48 @@
         <h1>Crear</h1>
 
         <a href="/admin" class="boton boton-verde">Volver</a>
+
+        <?php foreach($errores as $error): ?>
+            <div class="alerta error">
+            <?php echo $error; ?>
+            </div>
+        <?php endforeach; ?>
+
+
         <form class="formulario" method="POST" action="/admin/propiedades/crear.php">
             <fieldset>
                 <legend>Informacion General</legend>
 
                 <label for="titulo">Titulo:</label>
-                <input type="text" id="titulo" name="titulo" placeholder="Titulo propiedad">
+                <input type="text" id="titulo" name="titulo" placeholder="Titulo propiedad" value="<?php echo $titulo; ?>">
 
                 <label for="precio">Precio:</label>
-                <input type="number" id="precio" name="precio" placeholder="Precio propiedad">
+                <input type="number" id="precio" name="precio" placeholder="Precio propiedad" value="<?php echo $precio; ?>">
 
                 <label for="imagen">Imagen:</label>
                 <input type="file" id="imagen" accept="image/png">
                 
                 <label for="descripcion">Descripcion:</label>
-                <textarea id="descrpcion" name="descripcion"></textarea>
+                <textarea id="descrpcion" name="descripcion"><?php echo $descripcion; ?></textarea>
             </fieldset>
 
             <fieldset>
                 <legend>Informacion Propiedad</legend>
 
                 <label for="habitaciones">Habitaciones:</label>
-                <input type="number" id="habitaciones" name="habitaciones" placeholder="Ej: 3" min="1" max="9">
+                <input type="number" id="habitaciones" name="habitaciones" placeholder="Ej: 3" min="1" max="9" value="<?php echo $habitaciones; ?>">
 
                 <label for="wc">Baños</label>
-                <input type="number" id="wc" name="wc" placeholder="Ej: 3" min="1" max="9">
+                <input type="number" id="wc" name="wc" placeholder="Ej: 3" min="1" max="9" value="<?php echo $wc; ?>">
 
                 <label for="estacionamiento">Estacionamiento</label>
-                <input type="number" id="estacionamiento" name="estacionamiento" placeholder="Ej: 3" min="1" max="9">
+                <input type="number" id="estacionamiento" name="estacionamiento" placeholder="Ej: 3" min="1" max="9" value="<?php echo $estacionamiento; ?>">
             </fieldset>
 
             <fieldset>
                 <legend>Vendedor</legend>
                 <select name="vendedorId">
+                    <option value="">--Seleccione--</option>
                     <option value="1">Aleja</option>
                     <option value="2">Raul</option>
                 </select>
