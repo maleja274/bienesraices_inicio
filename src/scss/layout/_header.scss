@@ -24,18 +24,21 @@
             }
         }
     }
+    
 }
 
-.contenido-header{
+.contenido-header {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+      
+    
+    h2{
+        text-align: left;
+        color: $verde;
+        font-weight: $bold;
+        line-height: 2;
+        max-width: 600px;  
+    }    
 }
 
-h2{
-    text-align: left;
-    color: $blanco;
-    font-weight: $bold;
-    line-height: 2;
-    max-width: 600px;
-}
