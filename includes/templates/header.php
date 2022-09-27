@@ -38,8 +38,9 @@
                         <?php if($auth): ?>
                             <a href="cerrar-sesion.php">Cerrar Sesion</a>
                         <?php endif; ?>
-                    </nav>
+                       </nav>
+                </div>       
             </div><!--final barra--> 
-            <?php echo $inicio ? "" : ''; ?>         
+            <?php echo $inicio ? "<h2>Venta de Casas y Departamentos Exclusivos de Lujo</h2>" : ''; ?>         
         </div>
     </header>
