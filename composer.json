@@ -1,0 +1,17 @@
+{
+    "name": "malej/bienesraices_inicio",
+    "description": "creando un proyecto con programacion orientada a objetos",
+    "type": "project",
+    "authors": [
+        {
+            "name": "maleja274",
+            "email": "maleja274@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\" : "./classes"
+        }
+    }
+}
