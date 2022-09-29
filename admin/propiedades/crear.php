@@ -3,6 +3,7 @@
     require '../../includes/app.php';
 
     use App\Propiedad;
+    use Intervention\Image\ImageManagerStatic as Imagen;
 
     estaAutenticado();
     
@@ -13,7 +14,8 @@
     $resultado = mysqli_query($db, $consulta);
 
      // Arreglo con mensaje de errores
-    $errores = [];
+    $errores = Propiedad::getErrores();
+
 
     $titulo = '';
     $precio = '';
@@ -26,108 +28,44 @@
      //Ejecutar codigo despues de que el usuario envia formulario
      if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+
+        /**Crea una nueva instancia */
         $propiedad = new Propiedad($_POST);
-
-        $propiedad->guardar();
-
-        // echo "<pre>";
-        // var_dump($_POST);
-        // echo "</pre>";
-
-        echo "<pre>";
-        var_dump($_FILES);
-        echo "</pre>";
-
-
-       
-        $titulo = mysqli_real_escape_string( $db,  $_POST['titulo'] );
-        $precio = mysqli_real_escape_string( $db,  $_POST['precio'] );
-        $descripcion = mysqli_real_escape_string( $db,  $_POST['descripcion'] );
-        $habitaciones = mysqli_real_escape_string( $db,  $_POST['habitaciones'] );
-        $wc = mysqli_real_escape_string( $db,  $_POST['wc'] );
-        $estacionamiento = mysqli_real_escape_string( $db,  $_POST['estacionamiento'] );
-        $vendedores_id = mysqli_real_escape_string( $db,  $_POST['vendedor'] );
-        $creado = date('Y/m/d');
-
-        //Asignar files hacia una variable
-        $imagen = $_FILES['imagen'];
-
-
-        if(!$titulo) {
-            $errores[] = "Debes añadir un titulo";
-        }
-
-        if(!$precio) {
-            $errores[] = "El precio es obligatorio";
-        }
-
-        if(strlen($descripcion) < 50) {
-            $errores[] = "La descripcion es obligatoria y debe tener al menos 50 caracteres";
-        }
-
-        if(!$habitaciones) {
-            $errores[] = "El numero de habitaciones es obligatoria";
-        }
-
-        if(!$wc) {
-            $errores[] = "El numero de wc es obligatorio";
-        }
-
-        if(!$estacionamiento) {
-            $errores[] = "El numero de estacionamientos es obligatorio";
-        }
-
-        if(!$vendedores_id) {
-            $errores[] = "Elige un vendedor";
-        }
-
-        if(!$imagen['name']|| $imagen['error']) {
-            $errores[] = 'La imagen es obligatoria';
-        }
-
-        // Validar pot tamaño (1mg maximo)
-        $medida = 1000 * 1000;
-
-        if($imagen['size'] > $medida) {
-            $errores[] = 'la imagen es pesada';
-        }
-
-        // echo "<pre>";
-        // var_dump($errores);
-        // echo "</pre>";
-
-        // Revisa que el array de errores este vacio
-       
-        if(empty($errores)) {
-
 
             /**SUBIDA DE ARCHIVOS */
 
-            //Crear carpeta
-            $carpetaImagenes = '../../imagenes/';
-
-            if(!is_dir($carpetaImagenes)) {
-                mkdir($carpetaImagenes);
-            }
-
             //Generar un nombre unico
             $nombreImagen = md5(uniqid(rand(), true)) . ".jpg";
-            
 
-            //Subir imagen
+            //Setear la imagen
+             //Realiza un resize a la imagen con intervention
+             if($_FILES['imagen']['tmp_name']) {
+                $image = Imagen::make($_FILES['imagen']['tmp_name'])->fit(800,600);
+                $propiedad->setImagen($nombreImagen);
+            }
 
-            move_uploaded_file($imagen['tmp_name'], $carpetaImagenes . $nombreImagen);
-    
+             //validar
+             $errores = $propiedad->validar();
 
-           
-            // echo $query;
+            if(empty($errores)) {
+                
 
-            $resultado = mysqli_query($db, $query);
+                //Crear la carpeta para subir imagenes
+                if(!is_dir(CARPETA_IMAGENES)) {
+                    mkdir(CARPETA_IMAGENES);
+                }
 
-            if($resultado) {
-                //redireccionar al usurio
+                //Guarda la imagen en el servidor
+                $image->save(CARPETA_IMAGENES . $nombreImagen);
 
-                header('location: /admin?resultado=1');
+                //Guarda en la base de datos 
+                $resultado = $propiedad->guardar();
+
+                //Mensaje de exito o error
+                if($resultado) {
+                    //redireccionar al usurio
+
+                    header('location: /admin?resultado=1');
             }
         }
      }
