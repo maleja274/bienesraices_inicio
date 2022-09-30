@@ -24,8 +24,7 @@
 
 
         /**Crea una nueva instancia */
-        $propiedad = new Propiedad($_POST);
-
+        $propiedad = new Propiedad($_POST['propiedad']);
 
             /**SUBIDA DE ARCHIVOS */
 
@@ -34,8 +33,8 @@
 
             //Setear la imagen
              //Realiza un resize a la imagen con intervention
-             if($_FILES['imagen']['tmp_name']) {
-                $image = Imagen::make($_FILES['imagen']['tmp_name'])->fit(800,600);
+             if($_FILES['propiedad']['tmp_name']['imagen']) {
+                $image = Imagen::make($_FILES['propiedad']['tmp_name']['imagen'])->fit(800,600);
                 $propiedad->setImagen($nombreImagen);
             }
 

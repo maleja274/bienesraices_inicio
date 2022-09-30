@@ -16,6 +16,8 @@ estaAutenticado();
      
      // Obtener los datos de la propiedad
      $propiedad = Propiedad::find($id);
+
+  
     
 
      // Consultar para obtener los vendedores
@@ -23,86 +25,18 @@ estaAutenticado();
     $resultado = mysqli_query($db, $consulta);
 
      // Arreglo con mensaje de errores
-    $errores = [];
-
-    $titulo = $propiedad ['titulo'];
-    $precio = $propiedad ['precio'];
-    $descripcion = $propiedad ['descripcion'];
-    $habitaciones = $propiedad ['habitaciones'];
-    $wc = $propiedad ['wc'];
-    $estacionamiento = $propiedad ['estacionamiento'];
-    $vendedores_id = $propiedad ['vendedores_id'];
-    $imagenPropiedad = $propiedad ['imagen'];
+    $errores = Propiedad::getErrores();
 
      //Ejecutar codigo despues de que el usuario envia formulario
      if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // echo "<pre>";
-        // var_dump($_POST);
-        // echo "</pre>";
-        // exit;
-
-        // echo "<pre>";
-        // var_dump($_FILES);
-        // echo "</pre>";
-
-
+        //Asignar los atributos
+        $args = $_POST['propiedad'];
        
-        $titulo = mysqli_real_escape_string( $db,  $_POST['titulo'] );
-        $precio = mysqli_real_escape_string( $db,  $_POST['precio'] );
-        $descripcion = mysqli_real_escape_string( $db,  $_POST['descripcion'] );
-        $habitaciones = mysqli_real_escape_string( $db,  $_POST['habitaciones'] );
-        $wc = mysqli_real_escape_string( $db,  $_POST['wc'] );
-        $estacionamiento = mysqli_real_escape_string( $db,  $_POST['estacionamiento'] );
-        $vendedores_id = mysqli_real_escape_string( $db,  $_POST['vendedor'] );
-        $creado = date('Y/m/d');
+        $propiedad->sincronizar($args);
 
-        //Asignar files hacia una variable
-        $imagen = $_FILES['imagen'];
+        $errores = $propiedad->validar();
 
-
-        if(!$titulo) {
-            $errores[] = "Debes añadir un titulo";
-        }
-
-        if(!$precio) {
-            $errores[] = "El precio es obligatorio";
-        }
-
-        if(strlen($descripcion) < 50) {
-            $errores[] = "La descripcion es obligatoria y debe tener al menos 50 caracteres";
-        }
-
-        if(!$habitaciones) {
-            $errores[] = "El numero de habitaciones es obligatoria";
-        }
-
-        if(!$wc) {
-            $errores[] = "El numero de wc es obligatorio";
-        }
-
-        if(!$estacionamiento) {
-            $errores[] = "El numero de estacionamientos es obligatorio";
-        }
-
-        if(!$vendedores_id) {
-            $errores[] = "Elige un vendedor";
-        }
-
-
-        // Validar pot tamaño (1mg maximo)
-        $medida = 1000 * 1000;
-
-        if($imagen['size'] > $medida) {
-            $errores[] = 'la imagen es pesada';
-        }
-
-        // echo "<pre>";
-        // var_dump($errores);
-        // echo "</pre>";
-
-        // Revisa que el array de errores este vacio
-       
         if(empty($errores)) {
 
             // //Crear carpeta
@@ -167,7 +101,8 @@ estaAutenticado();
         <?php endforeach; ?>
 
         <form class="formulario" method="POST" enctype="multipart/form-data">
-           
+
+        <?php include '../../includes/templates/formulario_propiedades.php'; ?>
 
             <input type="Submit"value="Actualizar Propiedad" class="boton-verde"> 
         </form>

@@ -150,7 +150,7 @@ class Propiedad{
 
         return array_shift($resultado);
     } 
-    
+
     public static function consultarSQL($query) {
         //Consultar la base de datos
         $resultado = self::$db->query($query);
@@ -178,5 +178,13 @@ class Propiedad{
         }
         return $objeto;
     }
-      
+
+    //Sincroniza el objeto en memoria con los cambios realizados por el  usuario
+    public function sincronizar($args = []) {
+        foreach($args as $key => $value) {
+            if(property_exists($this, $key) && !is_null($value)) {
+                $this->$key = $value;
+            }
+        }
+    }      
 }
