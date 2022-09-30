@@ -1,11 +1,10 @@
 <?php 
 
-require '../../includes/funciones.php';
-$auth = estaAutenticado();
+use APP\Propiedad;
 
-if (!$auth) {
-    header('location: /');
-}
+require '../../includes/app.php';
+
+estaAutenticado();
 
     // Validar la URL para ID valido
     $id = $_GET['id'];
@@ -14,21 +13,10 @@ if (!$auth) {
     if(!$id) {
         header('location: /admin');
     }
-
-
-     // Base de datos
-     require '../../includes/config/database.php';
-     $db = conectarDB();
-
-
-    // Consultar los datos de la propiedad 
-    $consulta = "SELECT * FROM propiedades WHERE id = ${id}";
-    $resultado = mysqli_query($db, $consulta);
-    $propiedad = mysqli_fetch_assoc($resultado);
-
-    // echo "<pre>";
-    // var_dump($propiedad);
-    // echo "</pre>";
+     
+     // Obtener los datos de la propiedad
+     $propiedad = Propiedad::find($id);
+    
 
      // Consultar para obtener los vendedores
     $consulta = "SELECT * FROM vendedores";
@@ -179,47 +167,7 @@ if (!$auth) {
         <?php endforeach; ?>
 
         <form class="formulario" method="POST" enctype="multipart/form-data">
-            <fieldset>
-                <legend>Informacion General</legend>
-
-                <label for="titulo">Titulo:</label>
-                <input type="text" id="titulo" name="titulo" placeholder="Titulo propiedad" value="<?php echo $titulo; ?>">
-
-                <label for="precio">Precio:</label>
-                <input type="number" id="precio" name="precio" placeholder="Precio propiedad" value="<?php echo $precio; ?>">
-
-                <label for="imagen">Imagen:</label>
-                <input type="file" id="imagen" name="imagen" accept="image/jpeg, image/png">
-
-                <img src="/imagenes/<?php echo $imagenPropiedad; ?>"class="imagen-small">
-                
-                <label for="descripcion">Descripcion:</label>
-                <textarea id="descrpcion" name="descripcion"><?php echo $descripcion; ?></textarea>
-            </fieldset>
-
-            <fieldset>
-                <legend>Informacion Propiedad</legend>
-
-                <label for="habitaciones">Habitaciones:</label>
-                <input type="number" id="habitaciones" name="habitaciones" placeholder="Ej: 3" min="1" max="9" value="<?php echo $habitaciones; ?>">
-
-                <label for="wc">Baños</label>
-                <input type="number" id="wc" name="wc" placeholder="Ej: 3" min="1" max="9" value="<?php echo $wc; ?>">
-
-                <label for="estacionamiento">Estacionamiento</label>
-                <input type="number" id="estacionamiento" name="estacionamiento" placeholder="Ej: 3" min="1" max="9" value="<?php echo $estacionamiento; ?>">
-            </fieldset>
-
-            <fieldset>
-                <legend>Vendedor</legend>
-                <select name="vendedor">
-                    <option value="">-- Seleccione --<></option>
-                    <?php while ($vendedor = mysqli_fetch_assoc($resultado)): ?>
-                        <option  <?php echo $vendedores_id === $vendedor['id'] ? 'selected' : ''; ?> value="<?php echo $vendedor['id']; ?>">
-                        <?php echo $vendedor['nombre'] . " " . $vendedor['apellido'];?></option>
-                    <?php endwhile; ?>
-                </select>
-            </fieldset>
+           
 
             <input type="Submit"value="Actualizar Propiedad" class="boton-verde"> 
         </form>
