@@ -26,7 +26,7 @@
         /**Crea una nueva instancia */
         $propiedad = new Propiedad($_POST['propiedad']);
 
-        debuguear($propiedad);
+       
 
             /**SUBIDA DE ARCHIVOS */
 
