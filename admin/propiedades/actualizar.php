@@ -33,13 +33,10 @@ estaAutenticado();
        
         $propiedad->sincronizar($args);
 
-
         //validacion
         $errores = $propiedad->validar();
 
-
         //subida de archivos
-
         //Generar un nombre unico
         $nombreImagen = md5(uniqid(rand(), true)) . ".jpg";
 
@@ -49,6 +46,7 @@ estaAutenticado();
         }
 
         if(empty($errores)) {
+            
             //Almacenar la imagen
             $image->save(CARPETA_IMAGENES . $nombreImagen);
 
