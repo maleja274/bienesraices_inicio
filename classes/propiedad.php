@@ -45,6 +45,17 @@ class Propiedad{
     }
 
     public function guardar() {
+        if(isset($this->id)) {
+            //actualizar
+            $this->actualizar();
+        }else {
+            //creando un nuevo registro
+            $this->crear();
+        }
+
+    }
+
+    public function crear() {
 
              //sanitizar los datos
         $atributos = $this->sanitizarAtributos(); 
@@ -60,6 +71,29 @@ class Propiedad{
         $resultado = self::$db->query($query);
 
         return $resultado;
+    }
+
+    public function actualizar() {
+        //sanitizar los datos
+        $atributos = $this->sanitizarAtributos(); 
+       
+
+        $valores = [];
+        foreach($atributos as $key => $value) {
+            $valores[] = "{$key}='{$value}'";
+        }
+
+        $query = " UPDATE propiedades SET ";
+        $query .= join(', ', $valores);
+        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
+        $query .= " LIMIT 1 ";
+
+        $resultado = self::$db->query($query);
+
+        if($resultado) {
+            //redireccionar al usurio
+            header('location: /admin?resultado=2');
+        } 
     }
 
     // Identificar y unir los atributos de la DB
@@ -84,6 +118,16 @@ class Propiedad{
 
     //Subida de archivos 
     public function setImagen($imagen) {
+
+        //elimina la imagen previa
+        if(isset($this->id)) {
+            //comprobar si existe el archivo
+            $existeArchivo = file_exists(CARPETA_IMAGENES . $this->imagen);
+            if($existeArchivo) {
+                unlink(CARPETA_IMAGENES . $this->imagen);
+            }
+        }
+        
         //Asignar al atributode imagen el nombre de la imagen
         if($imagen) {
             $this->imagen = $imagen;
